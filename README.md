@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Emmanuel — Architecte de l'Invisible
 
-## Getting Started
+Un portfolio haut de gamme et immersif conçu pour les recruteurs et les amateurs de design d'exception. Ce projet allie rigueur mathématique et sensibilité artistique à travers une direction artistique soignée nommée **Obsidian Forge**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎨 Design System & Direction Artistique
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le projet est basé sur un design system rigoureux alliant le luxe, l'or et la profondeur de l'obsidienne.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+![Design System](./public/design-system.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Fondations Visuelles
+*   **Thème Principal** : Obsidian Forge (Noirs profonds, gris texturés, lueurs d'accentuation Lux Gold `#C8A96E`).
+*   **Typographie** : Alliance d'une Serif italique élégante pour les titres et d'une Mono technique pour les détails structurels.
+*   **Aura WebGL** : Un fond dynamique de particules et de gradients en mouvement constant, attiré physiquement par le pointeur de l'utilisateur.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Stack Technique
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Le site est propulsé par les technologies les plus modernes et performantes de l'écosystème web :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+*   **Framework** : [Next.js 15 (App Router)](https://nextjs.org/) & [React 19](https://react.dev/)
+*   **Style** : [Tailwind CSS v4 (CSS-First)](https://tailwindcss.com/)
+*   **Animations & Physique** : [GSAP (GreenSock)](https://gsap.com/) & [Framer Motion](https://www.framer.com/motion/)
+*   **Effets 3D** : [Three.js / WebGL](https://threejs.org/)
+*   **Défilement Fluide** : [Lenis Smooth Scroll](https://lenis.darkroom.engineering/)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚡ Fonctionnalités Clés
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1.  **WebGL Fluid Aura** : Arrière-plan génératif qui interagit avec le curseur utilisateur.
+2.  **Custom Inertial Cursor** : Un curseur personnalisé doté d'une physique de lag (lerp) pour un suivi ultra-fluide.
+3.  **Adaptive Motion** : Respect réactif et complet des préférences système d'accessibilité (`prefers-reduced-motion`) désactivant instantanément les animations lourdes et translations.
+4.  **Works Vector Schematics** : Des visuels géométriques vectoriels uniques pour chaque projet dans la galerie.
+5.  **Interactive Counter** : Des compteurs statistiques animés de façon fluide via RequestAnimationFrame.
+
+---
+
+## 🚀 Démarrage Rapide
+
+### Prérequis
+*   Node.js (v20 ou supérieur recommandé)
+*   pnpm (gestionnaire de paquets)
+
+### Installation
+1.  Installez les dépendances :
+    ```bash
+    pnpm install
+    ```
+2.  Lancez le serveur de développement :
+    ```bash
+    pnpm run dev
+    ```
+3.  Ouvrez [http://localhost:3000](http://localhost:3000) pour voir le résultat.
+
+---
+
+Créé avec rigueur et passion par **iamydgel**.
