@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { Marquee, MarqueeContent, MarqueeItem } from "@/components/ui/marquee";
 
 // Composant CountUp réutilisable avec RAF et respect de prefers-reduced-motion
 function CountUp({ target, duration = 1500 }: { target: number; duration?: number }) {
@@ -224,20 +225,19 @@ export function About() {
             <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
               Technologies maîtrisées
             </h3>
-            <div className="flex flex-wrap gap-2.5">
-              {skills.map((skill, index) => (
-                <motion.span
-                  key={skill.name}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="inline-flex items-center gap-2.5 px-4 py-2 bg-surface text-xs font-mono text-txt border border-border-glow rounded-md hover:border-accent/30 transition-colors"
-                >
-                  {skill.icon}
-                  <span>{skill.name}</span>
-                </motion.span>
-              ))}
+            <div className="w-full max-w-[600px] overflow-hidden">
+              <Marquee speed={40} spacing="12px" autoFill={true} pauseOnInteraction={true} showEdges={true} className="py-2">
+                <MarqueeContent>
+                  {skills.map((skill) => (
+                    <MarqueeItem key={skill.name}>
+                      <span className="inline-flex items-center gap-2.5 px-4 py-2 bg-surface text-xs font-mono text-txt border border-border-glow rounded-md hover:border-accent/30 transition-colors cursor-pointer select-none">
+                        {skill.icon}
+                        <span>{skill.name}</span>
+                      </span>
+                    </MarqueeItem>
+                  ))}
+                </MarqueeContent>
+              </Marquee>
             </div>
           </div>
         </div>
