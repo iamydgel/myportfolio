@@ -108,3 +108,14 @@ body {
 .skip-link:focus {
   top: 0;
 }
+
+/* Curseur personnalisé - Masquage du curseur natif sur desktop */
+@media (pointer: fine) {
+  body, 
+  a, 
+  button, 
+  [role="button"],
+  .interactive {
+    cursor: none !important;
+  }
+}
