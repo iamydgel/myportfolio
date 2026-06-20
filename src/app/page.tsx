@@ -5,10 +5,12 @@ import { Hero } from "@/components/Hero";
 import { Works } from "@/components/Works";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
+import { CustomCursor } from "@/components/CustomCursor";
 
 export default function Home() {
   return (
     <LenisProvider>
+      <CustomCursor />
       <Aura />
       <NavBar />
       <main id="main">
