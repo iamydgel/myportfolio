@@ -54,7 +54,7 @@ export function Works() {
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="works" className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-bg border-t border-border-glow z-10">
+    <section id="works" className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow isolate z-10">
       <div className="max-w-[1440px] mx-auto">
         {/* Header de section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">

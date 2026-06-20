@@ -79,7 +79,7 @@ export function About() {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-bg border-t border-border-glow overflow-hidden z-10">
+    <section id="about" ref={sectionRef} className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow overflow-hidden isolate z-10">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* Colonne Gauche : Portrait Parallaxe Géométrique */}

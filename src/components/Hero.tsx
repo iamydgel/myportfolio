@@ -8,7 +8,7 @@ export function Hero() {
   const easeLuxury = [0.22, 0.9, 0.35, 1] as const;
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-bg z-10">
+    <section className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent isolate z-10">
       {/* Contenu principal */}
       <div className="max-w-[1000px] mt-16">
         {/* Eyebrow */}

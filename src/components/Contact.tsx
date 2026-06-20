@@ -12,7 +12,7 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="relative w-full py-24 px-6 md:px-12 lg:px-24 bg-bg border-t border-border-glow z-10 flex flex-col justify-between min-h-[60vh]">
+    <section id="contact" className="relative w-full py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow isolate z-10 flex flex-col justify-between min-h-[60vh]">
       <div className="max-w-[1440px] mx-auto w-full flex-grow flex flex-col justify-center my-auto">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-6 text-center md:text-left">
           03 — Lancer une conversation
