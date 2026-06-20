@@ -26,9 +26,31 @@
 [data-part="content"] {
   display: flex;
   gap: var(--marquee-spacing);
-  animation: marqueeX var(--marquee-duration) linear infinite;
+  animation-timing-function: linear;
+  animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
+  animation-iteration-count: var(--marquee-loop-count);
   animation-play-state: var(--marquee-play-state);
+}
+
+[data-part="content"][data-side='start'],
+[data-part="content"][data-side='end'] {
+  animation-name: marqueeX;
+}
+
+[data-part="content"][data-side='top'],
+[data-part="content"][data-side='bottom'] {
+  animation-name: marqueeY;
+}
+
+[data-part="content"][data-reverse] {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-part="content"] {
+    animation: none;
+  }
 }
 
 @keyframes marqueeX {
