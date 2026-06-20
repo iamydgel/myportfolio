@@ -6,6 +6,18 @@ import { Menu, X } from "lucide-react";
 export function NavBar() {
   const [activeSection, setActiveSection] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Détection du scroll pour la navbar progressive
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    // Exécuter immédiatement pour le cas où la page est déjà défilée au chargement
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Détection de la section active
   useEffect(() => {
@@ -45,7 +57,11 @@ export function NavBar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-bg/80 backdrop-blur-md border-b border-border-glow transition-all duration-300">
+    <nav className={`fixed top-0 left-0 w-full h-16 z-50 transition-all duration-500 ${
+      scrolled
+        ? "bg-bg/80 backdrop-blur-md border-b border-border-glow shadow-md"
+        : "bg-transparent border-b border-transparent"
+    }`}>
       <div className="max-w-[1440px] mx-auto h-full px-6 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="font-serif text-xl italic tracking-wide text-txt hover:text-accent transition-colors duration-200">
