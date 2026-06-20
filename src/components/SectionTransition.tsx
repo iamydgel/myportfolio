@@ -15,11 +15,11 @@ export function SectionTransition({ children, isFirst = false, isLast = false }:
   const prefersReducedMotion = usePrefersReducedMotion();
 
   // Configuration des offsets de scroll
-  const offset = isFirst
-    ? (["start start", "end start"] as const)
+  const offset = (isFirst
+    ? ["start start", "end start"]
     : isLast
-    ? (["start end", "start start"] as const)
-    : (["start end", "end start"] as const);
+    ? ["start end", "start start"]
+    : ["start end", "end start"]) as any;
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
