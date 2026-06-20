@@ -188,3 +188,11 @@ body {
 .animate-orbe-pulse {
   animation: orbePulse 3.5s ease-in-out infinite;
 }
+
+/* Effet de color-grading gold pour le visuel SVG dans les cartes de projets */
+.work-card-svg {
+  transition: filter 300ms var(--ease-pop);
+}
+.group:hover .work-card-svg {
+  filter: sepia(0.4) hue-rotate(340deg) saturate(1.5);
+}
