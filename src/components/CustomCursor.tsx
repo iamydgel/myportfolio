@@ -17,7 +17,9 @@ export function CustomCursor() {
     // Respecter prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    setIsVisible(true);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1900);
 
     // Positions physiques
     let rx = 0; // ring X
@@ -78,6 +80,7 @@ export function CustomCursor() {
     render();
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
       cancelAnimationFrame(rafId);
