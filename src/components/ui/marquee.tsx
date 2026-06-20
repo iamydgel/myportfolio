@@ -33,7 +33,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
     return (
       <ArkMarquee.Root
         ref={ref}
-        side={(orientation === "vertical" ? "top" : "left") as any}
+        side={(orientation === "vertical" ? "top" : "start") as any}
         speed={speed}
         spacing={spacing}
         autoFill={autoFill}
