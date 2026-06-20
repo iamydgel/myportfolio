@@ -86,7 +86,7 @@ export function About() {
         <div className="relative flex justify-center items-center h-[400px] md:h-[500px]">
           <motion.div 
             style={{ y: yParallax }}
-            className="relative w-[300px] h-[400px] md:w-[350px] md:h-[450px] rounded-radius-card bg-surface border border-border-glow overflow-hidden flex items-center justify-center shadow-lg"
+            className="relative w-[300px] h-[400px] md:w-[350px] md:h-[450px] rounded-radius-card bg-surface border border-border-glow overflow-hidden flex items-center justify-center shadow-lg animate-orbe-pulse"
           >
             {/* Effets de fond internes pour simuler une sculpture 3D invisible */}
             <div className="absolute w-[80%] h-[80%] rounded-full border border-accent/20 flex items-center justify-center animate-spin-slow">
