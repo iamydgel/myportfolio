@@ -53,7 +53,7 @@ export function Hero() {
             onClick={() => {
               document.getElementById("works")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="px-8 py-4 text-xs uppercase font-semibold tracking-widest text-bg bg-accent rounded-full hover:bg-white transition-colors cursor-pointer"
+            className="px-8 py-4 text-xs uppercase font-semibold tracking-widest text-accent bg-transparent border-[1.5px] border-accent rounded-full hover:bg-accent hover:text-bg transition-all duration-300 cursor-pointer"
           >
             Découvrir les projets
           </MagneticButton>
