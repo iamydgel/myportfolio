@@ -118,6 +118,8 @@ export function Aura() {
         uMouse: { value: new THREE.Vector2(0.5, 0.5) },
         uTime: { value: 0.0 },
         uScale: { value: 1.0 },
+        uGlow: { value: 0.13 },
+        uColorMix: { value: 0.0 },
       };
 
       material = new THREE.ShaderMaterial({
@@ -133,17 +135,22 @@ export function Aura() {
           uniform vec2 uMouse;
           uniform float uTime;
           uniform float uScale;
+          uniform float uGlow;
+          uniform float uColorMix;
           varying vec2 vUv;
 
           void main() {
             // Ajustement du ratio d'aspect pour garder l'aura circulaire
             vec2 d = vUv - uMouse;
             float r = length(d) / (0.26 * uScale);
-            float glow = exp(-r * r * 3.5) * 0.16;
+            float glow = exp(-r * r * 3.5) * uGlow;
             
             vec3 warm = vec3(0.78, 0.66, 0.43);   // Lux Gold
             vec3 cool = vec3(0.35, 0.39, 0.78);   // Ice Blue
-            vec3 col = mix(warm, cool, smoothstep(0.0, 0.8, r));
+            
+            // Mix de base selon le scroll
+            vec3 baseColor = mix(warm, cool, uColorMix);
+            vec3 col = mix(baseColor, cool, smoothstep(0.0, 0.8, r));
             
             gl_FragColor = vec4(col * glow, glow);
           }
@@ -166,9 +173,47 @@ export function Aura() {
 
     // Boucle d'animation principale (RAF)
     const tick = () => {
-      // 1. Spring Physics pour l'Aura
-      const fx = (tx - ax) * ATTRACTION / MASS;
-      const fy = (ty - ay) * ATTRACTION / MASS;
+      // Calcul du défilement pour les interpolations
+      const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
+      const height = typeof window !== "undefined" ? window.innerHeight : 800;
+      const width = typeof window !== "undefined" ? window.innerWidth : 1200;
+      const scrollProgress = scrollY / (height || 1);
+
+      // Helper d'interpolation linéaire
+      const interpolate = (val: number, inputs: number[], outputs: number[]) => {
+        if (val <= inputs[0]) return outputs[0];
+        if (val >= inputs[inputs.length - 1]) return outputs[outputs.length - 1];
+        for (let i = 0; i < inputs.length - 1; i++) {
+          if (val >= inputs[i] && val <= inputs[i + 1]) {
+            const t = (val - inputs[i]) / (inputs[i + 1] - inputs[i]);
+            return outputs[i] + t * (outputs[i + 1] - outputs[i]);
+          }
+        }
+        return outputs[0];
+      };
+
+      // Interpolation de la force lumineuse (uGlow) et du mélange colorimétrique (uColorMix)
+      const currentGlow = interpolate(scrollProgress, [0, 1, 2, 3], [0.13, 0.08, 0.06, 0.07]);
+      const currentColorMix = interpolate(scrollProgress, [0, 1, 2, 3], [0.0, 0.3, 0.0, 1.0]);
+
+      // Ancrage physique (bias) de l'Aura par section
+      const biasXTarget = interpolate(scrollProgress, [0, 1, 2, 3], [0.85, 0.5, 0.25, 0.5]) * width - AURA_HALF;
+      const biasYTarget = interpolate(scrollProgress, [0, 1, 2, 3], [0.15, 0.5, 0.5, 0.85]) * height - AURA_HALF;
+      const biasMix = interpolate(scrollProgress, [0, 1, 2, 3], [0.7, 0.0, 0.8, 0.9]);
+
+      // Calcul des coordonnées cibles mixtes
+      const biasX = biasXTarget;
+      const biasY = biasYTarget;
+
+      // Parallaxe vertical de l'Aura sur le Hero
+      const parallaxY = scrollProgress < 1.0 ? scrollY * 0.3 : 0;
+
+      const finalTx = tx * (1.0 - biasMix) + biasX * biasMix;
+      const finalTy = (ty + parallaxY) * (1.0 - biasMix) + biasY * biasMix;
+
+      // 1. Spring Physics pour l'Aura vers la cible mixte
+      const fx = (finalTx - ax) * ATTRACTION / MASS;
+      const fy = (finalTy - ay) * ATTRACTION / MASS;
       vx = (vx + fx) * (1 - FRICTION);
       vy = (vy + fy) * (1 - FRICTION);
       ax += vx;
@@ -193,9 +238,14 @@ export function Aura() {
         material.uniforms.uMouse.value.set(normX, normY);
         material.uniforms.uTime.value += 0.01;
         material.uniforms.uScale.value = scale;
+        material.uniforms.uGlow.value = currentGlow;
+        material.uniforms.uColorMix.value = currentColorMix;
         renderer.render(scene, camera);
       } else if (fallbackRef.current) {
-        // Fallback CSS
+        // Fallback CSS dynamique
+        const baseColor1 = `rgba(200, 169, 110, ${currentGlow})`;
+        const baseColor2 = `rgba(90, 100, 200, ${currentGlow * 0.6})`;
+        fallbackRef.current.style.background = `radial-gradient(circle at 30% 30%, ${baseColor1} 0%, ${baseColor2} 40%, transparent 70%)`;
         fallbackRef.current.style.transform = `translate3d(${ax}px, ${ay}px, 0) scale(${scale})`;
       }
 
