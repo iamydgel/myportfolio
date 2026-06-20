@@ -6,6 +6,7 @@ import { Works } from "@/components/Works";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { CustomCursor } from "@/components/CustomCursor";
+import { SectionTransition } from "@/components/SectionTransition";
 
 export default function Home() {
   return (
@@ -14,10 +15,18 @@ export default function Home() {
       <Aura />
       <NavBar />
       <main id="main">
-        <Hero />
-        <Works />
-        <About />
-        <Contact />
+        <SectionTransition isFirst>
+          <Hero />
+        </SectionTransition>
+        <SectionTransition>
+          <Works />
+        </SectionTransition>
+        <SectionTransition>
+          <About />
+        </SectionTransition>
+        <SectionTransition isLast>
+          <Contact />
+        </SectionTransition>
       </main>
     </LenisProvider>
   );
