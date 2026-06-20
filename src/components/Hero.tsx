@@ -18,29 +18,41 @@ export function Hero() {
         <motion.p
           initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: easeLuxury, delay: 0.5 }}
+          transition={{ duration: 0.6, ease: easeLuxury, delay: 0.6 }}
           className="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-6"
         >
           Emmanuel · Vibe Developer
         </motion.p>
 
-        {/* Tagline principale avec clip-path */}
-        <div className="overflow-hidden mb-6">
-          <motion.h1
-            initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
-            animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
-            transition={{ duration: 0.9, ease: easeLuxury, delay: 0.7 }}
-            className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight"
-          >
-            Architecte de l'invisible.
-          </motion.h1>
-        </div>
+        {/* Tagline principale avec clip-path en deux vagues */}
+        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight mb-6 flex flex-col">
+          <span className="overflow-hidden block">
+            <motion.span
+              className="block"
+              initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
+              animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
+              transition={{ duration: 0.9, ease: easeLuxury, delay: 0.7 }}
+            >
+              Architecte
+            </motion.span>
+          </span>
+          <span className="overflow-hidden block">
+            <motion.span
+              className="block"
+              initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
+              animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
+              transition={{ duration: 0.9, ease: easeLuxury, delay: 0.9 }}
+            >
+              de l'invisible.
+            </motion.span>
+          </span>
+        </h1>
 
         {/* Sous-titre descriptif */}
         <motion.p
           initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.9 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.2 }}
           className="text-muted text-base md:text-lg lg:text-xl max-w-[600px] leading-relaxed mb-10"
         >
           Je ne montre pas simplement du code. Je façonne des espaces numériques interactifs à forte intensité émotionnelle.
@@ -50,7 +62,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
+          transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1], delay: 1.5 }}
         >
           <MagneticButton
             onClick={() => {
@@ -68,7 +80,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 2.0 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 2.2 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer pointer-events-none"
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
