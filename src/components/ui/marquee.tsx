@@ -61,10 +61,7 @@ export const MarqueeContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ArkMarquee.Content
     ref={ref}
-    className={`flex shrink-0 min-w-full justify-around gap-[var(--marquee-spacing)] ${
-      // L'animation s'applique différemment selon la direction de déplacement
-      "animate-marquee-x"
-    } [animation-play-state:var(--marquee-play-state)] ${className || ""}`}
+    className={`flex shrink-0 min-w-full justify-around ${className || ""}`}
     {...props}
   />
 ));

@@ -20,17 +20,32 @@
   --radius-card: 20px;
   
   --animate-pulse-slow: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
 
-  --animate-marquee-x: marqueeX var(--marquee-duration) linear infinite var(--marquee-delay);
-  --animate-marquee-y: marqueeY var(--marquee-duration) linear infinite var(--marquee-delay);
+/* Animations de défilement natif pour Ark UI Marquee */
+[data-part="content"] {
+  display: flex;
+  gap: var(--marquee-spacing);
+  animation: marqueeX var(--marquee-duration) linear infinite;
+  animation-delay: var(--marquee-delay);
+  animation-play-state: var(--marquee-play-state);
+}
 
-  @keyframes marqueeX {
-    from { transform: translateX(0); }
-    to { transform: translateX(var(--marquee-translate)); }
+@keyframes marqueeX {
+  from {
+    transform: translateX(0);
   }
-  @keyframes marqueeY {
-    from { transform: translateY(0); }
-    to { transform: translateY(var(--marquee-translate)); }
+  to {
+    transform: translateX(var(--marquee-translate));
+  }
+}
+
+@keyframes marqueeY {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(var(--marquee-translate));
   }
 }
 
