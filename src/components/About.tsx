@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { Marquee, MarqueeContent, MarqueeItem } from "@/components/ui/marquee";
+import Image from "next/image";
 
 // Composant CountUp réutilisable avec RAF et respect de prefers-reduced-motion
 function CountUp({ target, duration = 1500 }: { target: number; duration?: number }) {
@@ -167,22 +168,32 @@ export function About() {
               prefersReducedMotion ? "" : "animate-orbe-pulse"
             }`}
           >
+            {/* Portrait de l'utilisateur */}
+            <Image
+              src="/me.png"
+              alt="Portrait de Emmanuel"
+              fill
+              priority
+              sizes="(max-width: 768px) 300px, 350px"
+              className="object-cover transition-transform duration-500 hover:scale-105"
+            />
+
             {/* Effets de fond internes pour simuler une sculpture 3D invisible */}
-            <div className={`absolute w-[80%] h-[80%] rounded-full border border-accent/20 flex items-center justify-center ${
+            <div className={`absolute w-[80%] h-[80%] rounded-full border border-accent/15 flex items-center justify-center z-20 pointer-events-none ${
               prefersReducedMotion ? "" : "animate-spin-slow"
             }`}>
-              <div className="w-[80%] h-[80%] rounded-full border border-dashed border-accent/30" />
+              <div className="w-[80%] h-[80%] rounded-full border border-dashed border-accent/25" />
             </div>
             
-            <div className={`absolute w-24 h-24 rounded-full bg-accent/10 blur-xl ${
+            <div className={`absolute w-24 h-24 rounded-full bg-accent/5 blur-xl z-20 pointer-events-none ${
               prefersReducedMotion ? "" : "animate-pulse-slow"
             }`} />
 
             {/* Superposition de verre translucide */}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-80 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-80 z-20 pointer-events-none" />
 
             {/* Signature minimaliste */}
-            <span className="absolute bottom-8 font-serif text-lg italic text-txt z-20">
+            <span className="absolute bottom-8 font-serif text-lg italic text-txt z-30 pointer-events-none">
               L'invisible prend forme.
             </span>
           </motion.div>
@@ -228,8 +239,8 @@ export function About() {
             <div className="w-full max-w-[600px] overflow-hidden">
               <Marquee speed={40} spacing="12px" autoFill={true} pauseOnInteraction={true} showEdges={true} className="py-2">
                 <MarqueeContent>
-                  {skills.map((skill) => (
-                    <MarqueeItem key={skill.name}>
+                  {[...skills, ...skills].map((skill, index) => (
+                    <MarqueeItem key={`${skill.name}-${index}`}>
                       <span className="inline-flex items-center gap-2.5 px-4 py-2 bg-surface text-xs font-mono text-txt border border-border-glow rounded-md hover:border-accent/30 transition-colors cursor-pointer select-none">
                         {skill.icon}
                         <span>{skill.name}</span>
