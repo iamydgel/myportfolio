@@ -75,8 +75,9 @@ export function About() {
     {
       name: "Next.js",
       icon: (
-        <svg viewBox="0 0 180 180" className="w-4 h-4 text-accent fill-current">
-          <path d="M180 90C180 139.706 139.706 180 90 180C40.2944 180 0 139.706 0 90C0 40.2944 40.2944 0 90 0C139.706 0 180 40.2944 180 90ZM116.141 126.969L67.1102 63.8569V126.969H55V53H68.8051L117.836 116.112V53H129.946V126.969H116.141Z" />
+        <svg viewBox="0 0 100 100" className="w-4 h-4 text-accent fill-none stroke-current" strokeWidth="6">
+          <circle cx="50" cy="50" r="45" />
+          <path d="M70.5 73.5L46 41v32.5h-7.5V26.5h7.5l24.5 32.5V26.5h7.5v47z" fill="currentColor" stroke="none" />
         </svg>
       ),
     },
@@ -157,7 +158,7 @@ export function About() {
       name: "Figma",
       icon: (
         <svg viewBox="0 0 24 24" className="w-4 h-4 text-accent fill-current">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 0c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm-4-4c0-2.21 1.79-4 4-4v8c-2.21 0-4-1.79-4-4zm0 8c0 2.21 1.79 4 4 4v-8c-2.21 0-4 1.79-4 4zm8-4c0-2.21-1.79-4-4-4v8c2.21 0 4-1.79 4-4z" />
+          <path d="M8 2c-2.21 0-4 1.79-4 4 0 2.21 1.79 4 4 4h4V2H8zm0 8c-2.21 0-4 1.79-4 4 0 2.21 1.79 4 4 4h4v-8H8zm0 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-4H8zm8-8c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4v8h4zm0 0c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4v-8h4z" />
         </svg>
       ),
     },
