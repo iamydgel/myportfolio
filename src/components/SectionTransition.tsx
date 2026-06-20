@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, useMotionValue } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface SectionTransitionProps {
@@ -13,36 +13,47 @@ interface SectionTransitionProps {
 export function SectionTransition({ children, isFirst = false, isLast = false }: SectionTransitionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const opacity = useMotionValue(1);
 
-  // Configuration des offsets de scroll
-  const offset = (isFirst
-    ? ["start start", "end start"]
-    : isLast
-    ? ["start end", "start start"]
-    : ["start end", "end start"]) as any;
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      opacity.set(1);
+      return;
+    }
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: offset,
-  });
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
 
-  // Interpolation de l'opacité :
-  // - Première section (Hero) : Reste à 1 en haut, descend vers 0 en quittant l'écran.
-  // - Dernière section (Contact) : Entre à 0, monte à 1 et y reste.
-  // - Sections intermédiaires : Entre à 0, reste à 1 au milieu, descend à 0 en sortant.
-  const opacity = useTransform(
-    scrollYProgress,
-    isFirst
-      ? [0, 0.8, 1]
-      : isLast
-      ? [0, 0.8, 1]
-      : [0, 0.25, 0.75, 1],
-    isFirst
-      ? [1, 1, 0]
-      : isLast
-      ? [0, 1, 1]
-      : [0, 1, 1, 0]
-  );
+      let currentOpacity = 1;
+
+      // 1. Fondu à l'entrée (en bas) : sur 200px d'apparition
+      if (!isFirst && rect.top > viewportHeight - 200) {
+        currentOpacity = Math.max(0, (viewportHeight - rect.top) / 200);
+      }
+      // 2. Fondu à la sortie (en haut) : sur 200px avant de quitter l'écran
+      else if (!isLast && rect.bottom < 200) {
+        currentOpacity = Math.max(0, rect.bottom / 200);
+      }
+
+      // Limitation entre 0 et 1
+      currentOpacity = Math.min(1, Math.max(0, currentOpacity));
+
+      opacity.set(currentOpacity);
+    };
+
+    // Initialisation immédiate au montage
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [isFirst, isLast, prefersReducedMotion, opacity]);
 
   return (
     <motion.div
