@@ -53,6 +53,63 @@ export function Works() {
   const filteredProjects =
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
+  // Génération du visuel vectoriel abstrait
+  const renderVisual = (id: string) => {
+    const commonClass = "w-[65%] h-[65%] text-accent/15 group-hover:text-accent/35 group-hover:scale-105 transition-all duration-700 ease-luxury";
+    switch (id) {
+      case "p1": // Voltaic Engine: Mesh 3D
+        return (
+          <svg viewBox="0 0 100 100" className={commonClass}>
+            <polygon points="50,15 85,35 85,75 50,95 15,75 15,35" fill="none" stroke="currentColor" strokeWidth="0.8" />
+            <line x1="50" y1="15" x2="50" y2="95" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+            <line x1="15" y1="35" x2="85" y2="75" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+            <line x1="85" y1="35" x2="15" y2="75" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+            <circle cx="50" cy="55" r="28" fill="none" stroke="currentColor" strokeWidth="0.4" />
+          </svg>
+        );
+      case "p2": // Aether OS: Graph de Nœuds
+        return (
+          <svg viewBox="0 0 100 100" className={commonClass}>
+            <circle cx="30" cy="30" r="3.5" fill="currentColor" className="animate-pulse" />
+            <circle cx="70" cy="30" r="3.5" fill="currentColor" />
+            <circle cx="50" cy="70" r="4.5" fill="currentColor" />
+            <circle cx="25" cy="65" r="2.5" fill="currentColor" />
+            <circle cx="75" cy="65" r="2.5" fill="currentColor" />
+            <line x1="30" y1="30" x2="70" y2="30" stroke="currentColor" strokeWidth="0.6" />
+            <line x1="30" y1="30" x2="50" y2="70" stroke="currentColor" strokeWidth="0.6" />
+            <line x1="70" y1="30" x2="50" y2="70" stroke="currentColor" strokeWidth="0.6" />
+            <line x1="25" y1="65" x2="50" y2="70" stroke="currentColor" strokeWidth="0.6" />
+            <line x1="75" y1="65" x2="50" y2="70" stroke="currentColor" strokeWidth="0.6" />
+            <circle cx="50" cy="70" r="18" fill="none" stroke="currentColor" strokeWidth="0.4" strokeDasharray="3,3" />
+          </svg>
+        );
+      case "p3": // Chronos AI: Formes d'ondes
+        return (
+          <svg viewBox="0 0 100 100" className={commonClass}>
+            <path d="M 10,50 Q 25,15 40,50 T 70,50 T 90,50" fill="none" stroke="currentColor" strokeWidth="1" />
+            <path d="M 10,60 Q 30,30 50,60 T 90,60" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+            <path d="M 10,40 Q 20,20 60,40 T 90,40" fill="none" stroke="currentColor" strokeWidth="0.3" opacity="0.4" />
+            <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="0.4" strokeDasharray="4,4" />
+            <line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" strokeWidth="0.4" strokeDasharray="4,4" />
+          </svg>
+        );
+      case "p4": // Krypton Wallet: Circuit Imprimé / Clé
+        return (
+          <svg viewBox="0 0 100 100" className={commonClass}>
+            <rect x="28" y="22" width="44" height="56" rx="6" fill="none" stroke="currentColor" strokeWidth="1" />
+            <path d="M 50,32 L 50,68 M 38,50 L 62,50" stroke="currentColor" strokeWidth="0.6" />
+            <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="0.6" />
+            <line x1="28" y1="35" x2="12" y2="35" stroke="currentColor" strokeWidth="0.6" />
+            <circle cx="12" cy="35" r="2.5" fill="currentColor" />
+            <line x1="72" y1="65" x2="88" y2="65" stroke="currentColor" strokeWidth="0.6" />
+            <circle cx="88" cy="65" r="2.5" fill="currentColor" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <section id="works" className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow isolate z-10">
       <div className="max-w-[1440px] mx-auto">
@@ -115,8 +172,8 @@ export function Works() {
                 />
 
                 {/* Motif géométrique minimaliste en arrière-plan */}
-                <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 flex items-center justify-center pointer-events-none">
-                  <div className="w-[80%] h-[80%] rounded-full border border-txt border-dashed animate-spin-slow" />
+                <div className="absolute inset-0 transition-all duration-700 flex items-center justify-center pointer-events-none">
+                  {renderVisual(project.id)}
                 </div>
 
                 {/* Contenu textuel */}
