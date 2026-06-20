@@ -74,12 +74,16 @@ export function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className={`fixed top-0 left-0 w-2 h-2 bg-accent rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-        isHovered ? "scale-[3.5] bg-transparent border border-accent" : ""
-      }`}
+      className="fixed top-0 left-0 pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
       style={{
         willChange: "transform",
       }}
-    />
+    >
+      <div
+        className={`w-2 h-2 bg-accent rounded-full transition-all duration-300 ${
+          isHovered ? "scale-[3.5] bg-transparent border border-accent" : ""
+        }`}
+      />
+    </div>
   );
 }
