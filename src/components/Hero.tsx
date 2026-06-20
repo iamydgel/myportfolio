@@ -5,7 +5,7 @@ import { MagneticButton } from "./MagneticButton";
 
 export function Hero() {
   // Courbe d'animation luxury
-  const easeLuxury = [0.22, 0.9, 0.35, 1];
+  const easeLuxury = [0.22, 0.9, 0.35, 1] as const;
 
   return (
     <section className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-bg z-10">

@@ -24,11 +24,17 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Emmanuel · Vibe Developer · Architecte de l'invisible",
   description: "Portfolio de développeur de haut niveau axé sur le design, l'esthétique et les interactions immersives.",
   authors: [{ name: "Emmanuel" }],
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
