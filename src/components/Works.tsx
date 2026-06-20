@@ -133,12 +133,19 @@ function ProjectCard({
       />
 
       {/* Motif géométrique minimaliste en arrière-plan */}
-      <div className="absolute inset-0 transition-all duration-700 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 transition-all duration-700 flex items-center justify-center pointer-events-none work-card-svg">
         {renderVisual(project.id, prefersReducedMotion)}
       </div>
 
+      {/* Overlay sombre avec flèche ↗ */}
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-250 ease-out flex items-start justify-end p-8 pointer-events-none z-10">
+        <svg viewBox="0 0 24 24" className="w-6 h-6 text-accent transform translate-x-2 -translate-y-2 opacity-0 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-pop">
+          <path d="M5 19L19 5M19 5H10M19 5V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      </div>
+
       {/* Contenu textuel */}
-      <div className="relative z-10" style={{ transform: "translateZ(30px)" }}>
+      <div className="relative z-20" style={{ transform: "translateZ(30px)" }}>
         <div className="flex flex-wrap gap-2 mb-4">
           {project.stack.map((tech) => (
             <span
@@ -210,16 +217,36 @@ export function Works() {
         {/* Header de section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
+            <motion.p
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.22, 0.9, 0.35, 1] }}
+              className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4"
+            >
               01 — Projets Sélectionnés
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-txt italic">
-              Expériences numériques.
-            </h2>
+            </motion.p>
+            <div className="overflow-hidden">
+              <motion.h2
+                initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
+                whileInView={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.8, ease: [0.22, 0.9, 0.35, 1], delay: 0.1 }}
+                className="font-serif text-4xl md:text-5xl lg:text-6xl text-txt italic"
+              >
+                Expériences numériques.
+              </motion.h2>
+            </div>
           </div>
 
-          {/* Filtres avec animation de fond FLIP */}
-          <div className="flex items-center gap-2 bg-surface/50 p-1 rounded-full border border-border-glow self-start">
+          {/* Filtres avec animation de fond FLIP et glide-in */}
+          <motion.div
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1], delay: 0.2 }}
+            className="flex items-center gap-2 bg-surface/50 p-1 rounded-full border border-border-glow self-start"
+          >
             {(["all", "web", "mobile"] as const).map((type) => (
               <button
                 key={type}
@@ -238,7 +265,7 @@ export function Works() {
                 )}
               </button>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* Grille de projets Masonry-like 2x2 */}
