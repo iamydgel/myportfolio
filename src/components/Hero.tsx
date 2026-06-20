@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import { MagneticButton } from "./MagneticButton";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 export function Hero() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   // Courbe d'animation luxury
   const easeLuxury = [0.22, 0.9, 0.35, 1] as const;
 
@@ -13,7 +16,7 @@ export function Hero() {
       <div className="max-w-[1000px] mt-16">
         {/* Eyebrow */}
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: easeLuxury, delay: 0.5 }}
           className="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-6"
@@ -24,8 +27,8 @@ export function Hero() {
         {/* Tagline principale avec clip-path */}
         <div className="overflow-hidden mb-6">
           <motion.h1
-            initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
-            animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
             transition={{ duration: 0.9, ease: easeLuxury, delay: 0.7 }}
             className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight"
           >
@@ -35,7 +38,7 @@ export function Hero() {
 
         {/* Sous-titre descriptif */}
         <motion.p
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.9 }}
           className="text-muted text-base md:text-lg lg:text-xl max-w-[600px] leading-relaxed mb-10"
@@ -45,7 +48,7 @@ export function Hero() {
 
         {/* CTA bouton magnétique */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
+          initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
         >
@@ -61,23 +64,25 @@ export function Hero() {
       </div>
 
       {/* Indicateur de défilement (Scroll indicator) */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0.3, 1, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 2.0 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer pointer-events-none"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-          Faire défiler
-        </span>
-        <div className="w-[1px] h-12 bg-border-glow relative overflow-hidden">
-          <motion.div
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-0 left-0 w-full h-4 bg-accent"
-          />
-        </div>
-      </motion.div>
+      {!prefersReducedMotion && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 2.0 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer pointer-events-none"
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Faire défiler
+          </span>
+          <div className="w-[1px] h-12 bg-border-glow relative overflow-hidden">
+            <motion.div
+              animate={{ y: ["-100%", "100%"] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-0 left-0 w-full h-4 bg-accent"
+            />
+          </div>
+        </motion.div>
+      )}
     </section>
   );
 }

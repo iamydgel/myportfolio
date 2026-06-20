@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 // Composant CountUp réutilisable avec RAF et respect de prefers-reduced-motion
 function CountUp({ target, duration = 1500 }: { target: number; duration?: number }) {
@@ -54,6 +55,7 @@ function CountUp({ target, duration = 1500 }: { target: number; duration?: numbe
 
 export function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
   
   // Parallaxe scroll avec framer-motion
   const { scrollYProgress } = useScroll({
@@ -61,7 +63,7 @@ export function About() {
     offset: ["start end", "end start"]
   });
   
-  const yParallax = useTransform(scrollYProgress, [0, 1], [-50, 50]);
+  const yParallax = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [-50, 50]);
 
   const stats = [
     { target: 8, label: "Années d'expérience" },
@@ -86,14 +88,20 @@ export function About() {
         <div className="relative flex justify-center items-center h-[400px] md:h-[500px]">
           <motion.div 
             style={{ y: yParallax }}
-            className="relative w-[300px] h-[400px] md:w-[350px] md:h-[450px] rounded-radius-card bg-surface border border-border-glow overflow-hidden flex items-center justify-center shadow-lg animate-orbe-pulse"
+            className={`relative w-[300px] h-[400px] md:w-[350px] md:h-[450px] rounded-radius-card bg-surface border border-border-glow overflow-hidden flex items-center justify-center shadow-lg ${
+              prefersReducedMotion ? "" : "animate-orbe-pulse"
+            }`}
           >
             {/* Effets de fond internes pour simuler une sculpture 3D invisible */}
-            <div className="absolute w-[80%] h-[80%] rounded-full border border-accent/20 flex items-center justify-center animate-spin-slow">
+            <div className={`absolute w-[80%] h-[80%] rounded-full border border-accent/20 flex items-center justify-center ${
+              prefersReducedMotion ? "" : "animate-spin-slow"
+            }`}>
               <div className="w-[80%] h-[80%] rounded-full border border-dashed border-accent/30" />
             </div>
             
-            <div className="absolute w-24 h-24 rounded-full bg-accent/10 blur-xl animate-pulse-slow" />
+            <div className={`absolute w-24 h-24 rounded-full bg-accent/10 blur-xl ${
+              prefersReducedMotion ? "" : "animate-pulse-slow"
+            }`} />
 
             {/* Superposition de verre translucide */}
             <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-80 z-10" />

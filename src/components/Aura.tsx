@@ -71,7 +71,12 @@ export function Aura() {
     // Gestion du hover sur les CTA
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest("button") || target.closest("a") || target.classList.contains("interactive")) {
+      if (
+        target &&
+        (target.closest("button") ||
+          target.closest("a") ||
+          (target.classList && target.classList.contains("interactive")))
+      ) {
         targetScale = 1.25;
       } else {
         targetScale = 1.0;

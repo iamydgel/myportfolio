@@ -32,10 +32,11 @@ export function CustomCursor() {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
-        target.closest("a") ||
-        target.closest("button") ||
-        target.closest('[role="button"]') ||
-        target.classList.contains("interactive")
+        target &&
+        (target.closest("a") ||
+          target.closest("button") ||
+          target.closest('[role="button"]') ||
+          (target.classList && target.classList.contains("interactive")))
       ) {
         setIsHovered(true);
       } else {

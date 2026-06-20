@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface Project {
   id: string;
@@ -14,6 +15,7 @@ interface Project {
 
 export function Works() {
   const [filter, setFilter] = useState<"all" | "web" | "mobile">("all");
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const projects: Project[] = [
     {
@@ -55,7 +57,9 @@ export function Works() {
 
   // Génération du visuel vectoriel abstrait
   const renderVisual = (id: string) => {
-    const commonClass = "w-[65%] h-[65%] text-accent/15 group-hover:text-accent/35 group-hover:scale-105 transition-all duration-700 ease-luxury";
+    const commonClass = `w-[65%] h-[65%] text-accent/15 group-hover:text-accent/35 transition-all duration-700 ease-luxury ${
+      prefersReducedMotion ? "" : "group-hover:scale-105"
+    }`;
     switch (id) {
       case "p1": // Voltaic Engine: Mesh 3D
         return (
@@ -70,7 +74,7 @@ export function Works() {
       case "p2": // Aether OS: Graph de Nœuds
         return (
           <svg viewBox="0 0 100 100" className={commonClass}>
-            <circle cx="30" cy="30" r="3.5" fill="currentColor" className="animate-pulse" />
+            <circle cx="30" cy="30" r="3.5" fill="currentColor" />
             <circle cx="70" cy="30" r="3.5" fill="currentColor" />
             <circle cx="50" cy="70" r="4.5" fill="currentColor" />
             <circle cx="25" cy="65" r="2.5" fill="currentColor" />
@@ -154,7 +158,7 @@ export function Works() {
               <motion.div
                 key={project.id}
                 layout
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 viewport={{ once: true, amount: 0.15 }}
@@ -163,7 +167,7 @@ export function Works() {
                   ease: [0.22, 0.9, 0.35, 1],
                   delay: index * 0.08,
                 }}
-                whileHover={{ y: -8 }}
+                whileHover={prefersReducedMotion ? {} : { y: -8 }}
                 className="group relative flex flex-col justify-end min-h-[400px] md:min-h-[500px] p-8 rounded-radius-card bg-surface border border-border-glow overflow-hidden cursor-pointer"
               >
                 {/* Dégradé visuel abstrait en fond */}
