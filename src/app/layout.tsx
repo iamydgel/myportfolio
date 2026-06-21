@@ -66,6 +66,12 @@ export default function RootLayout({
           viewBox="0 0 100 400"
           preserveAspectRatio="none"
         >
+          <defs>
+            <filter id="displacement-filter">
+              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" id="displacement-map" />
+            </filter>
+          </defs>
           <path
             id="aura-spine"
             d="M 85 15 C 80 80, 55 120, 50 150 C 45 180, 30 220, 25 250 C 20 280, 45 350, 50 380"

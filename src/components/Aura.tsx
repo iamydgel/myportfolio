@@ -241,6 +241,34 @@ export function Aura() {
           onLeave: () => pulseTween?.pause(),
           onLeaveBack: () => pulseTween?.pause(),
         });
+
+        // Déclencher la distorsion feDisplacementMap au milieu de la transition About -> Contact
+        ScrollTrigger.create({
+          trigger: "#about",
+          start: "bottom 35%",
+          onEnter: () => {
+            gsap.fromTo("#displacement-map", {
+              attr: { scale: 0 }
+            }, {
+              attr: { scale: 30 },
+              duration: 0.75,
+              yoyo: true,
+              repeat: 1,
+              ease: "power2.inOut"
+            });
+          },
+          onEnterBack: () => {
+            gsap.fromTo("#displacement-map", {
+              attr: { scale: 0 }
+            }, {
+              attr: { scale: 30 },
+              duration: 0.75,
+              yoyo: true,
+              repeat: 1,
+              ease: "power2.inOut"
+            });
+          }
+        });
       });
     }
 
@@ -375,7 +403,7 @@ export function Aura() {
   }, []);
 
   return (
-    <div ref={containerRef} className="aura-container">
+    <div ref={containerRef} className="aura-container" style={{ filter: "url(#displacement-filter)" }}>
       {/* Nœuds de contrôle techniques pour le plan-séquence */}
       <div id="aura-bridge" style={{ display: "none", "--hue": "38", "--op": "0.13", "--pulse-scale": "1.0" } as any} />
       <div id="aura-target-node" style={{ position: "absolute", width: "1px", height: "1px", visibility: "hidden", pointerEvents: "none" }} />
