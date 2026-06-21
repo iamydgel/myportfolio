@@ -5,6 +5,10 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { Marquee, MarqueeContent, MarqueeItem } from "@/components/ui/marquee";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Composant CountUp réutilisable avec RAF et respect de prefers-reduced-motion
 function CountUp({ target, duration = 1500 }: { target: number; duration?: number }) {
@@ -66,6 +70,27 @@ export function About() {
   });
   
   const yParallax = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [-50, 50]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo("#about", {
+        clipPath: "circle(0% at 25vw 50vh)"
+      }, {
+        clipPath: "circle(150vmax at 25vw 50vh)",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#works",
+          start: "bottom 70%",
+          end: "bottom 10%",
+          scrub: 0.3
+        }
+      });
+    });
+
+    return () => ctx.revert();
+  }, [prefersReducedMotion]);
 
   const stats = [
     { target: 8, label: "Années d'expérience" },
