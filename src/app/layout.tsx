@@ -51,6 +51,26 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Aller au contenu principal (Skip to content)
         </a>
+        <svg
+          id="aura-spine-container"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+            zIndex: -10,
+            visibility: "hidden",
+          }}
+          viewBox="0 0 100 400"
+          preserveAspectRatio="none"
+        >
+          <path
+            id="aura-spine"
+            d="M 85 15 C 80 80, 55 120, 50 150 C 45 180, 30 220, 25 250 C 20 280, 45 350, 50 380"
+          />
+        </svg>
         {children}
       </body>
     </html>
