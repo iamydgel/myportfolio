@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { CustomCursor } from "@/components/CustomCursor";
+import { Aura } from "@/components/Aura";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -51,6 +53,8 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Aller au contenu principal (Skip to content)
         </a>
+        <CustomCursor />
+        <Aura />
         <svg
           id="aura-spine-container"
           style={{
