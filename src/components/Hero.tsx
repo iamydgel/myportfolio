@@ -19,7 +19,9 @@ export function Hero() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      gsap.to("#hero-tagline-1, #hero-tagline-2", {
+      gsap.fromTo("#hero-tagline-1, #hero-tagline-2", {
+        clipPath: "inset(0% 0% 0% 0%)",
+      }, {
         clipPath: "inset(100% 0% 0% 0%)",
         ease: "none",
         scrollTrigger: {
