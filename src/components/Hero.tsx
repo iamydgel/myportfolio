@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,6 +9,15 @@ import { MagneticButton } from "./MagneticButton";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Chargement côté client uniquement — évite les erreurs SSR WebGL
+const Spline = dynamic(() => import("@splinetool/react-spline"), {
+  ssr: false,
+  loading: () => null,
+});
+
+const SPLINE_URL =
+  "https://prod.spline.design/3dcircularcardscopycopy-FPxJTJgUlyngVIGURiM1ZJQa-Th9/scene.splinecode";
 
 export function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -19,87 +29,130 @@ export function Hero() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo("#hero-tagline-1, #hero-tagline-2", {
-        clipPath: "inset(0% 0% 0% 0%)",
-      }, {
-        clipPath: "inset(100% 0% 0% 0%)",
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "bottom 75%",
-          end: "bottom 15%",
-          scrub: 0.3,
-        },
-      });
+      gsap.fromTo(
+        "#hero-tagline-1, #hero-tagline-2",
+        { clipPath: "inset(0% 0% 0% 0%)" },
+        {
+          clipPath: "inset(100% 0% 0% 0%)",
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "bottom 75%",
+            end: "bottom 15%",
+            scrub: 0.3,
+          },
+        }
+      );
     });
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
   return (
-    <section id="hero" className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent isolate z-10">
-      {/* Contenu principal */}
-      <div className="max-w-[1000px] mt-16">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: easeLuxury, delay: 0.6 }}
-          className="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-6"
-        >
-          Emmanuel · Vibe Developer
-        </motion.p>
-
-        {/* Tagline principale avec clip-path en deux vagues */}
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight mb-6 flex flex-col">
-          <span className="overflow-hidden block">
-            <motion.span
-              id="hero-tagline-1"
-              className="block"
-              initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
-              animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
-              transition={{ duration: 0.9, ease: easeLuxury, delay: 0.7 }}
-            >
-              Architecte
-            </motion.span>
-          </span>
-          <span className="overflow-hidden block">
-            <motion.span
-              id="hero-tagline-2"
-              className="block"
-              initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
-              animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
-              transition={{ duration: 0.9, ease: easeLuxury, delay: 0.9 }}
-            >
-              de l'invisible.
-            </motion.span>
-          </span>
-        </h1>
-
-        {/* Sous-titre descriptif */}
-        <motion.p
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: 1.2 }}
-          className="text-muted text-base md:text-lg lg:text-xl max-w-[600px] leading-relaxed mb-10"
-        >
-          Je ne montre pas simplement du code. Je façonne des espaces numériques interactifs à forte intensité émotionnelle.
-        </motion.p>
-
-        {/* CTA bouton magnétique */}
-        <motion.div
-          initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1], delay: 1.5 }}
-        >
-          <MagneticButton
-            onClick={() => {
-              document.getElementById("works")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-8 py-4 text-xs uppercase font-semibold tracking-widest text-accent bg-transparent border-[1.5px] border-accent rounded-full hover:bg-accent hover:text-bg transition-all duration-300 cursor-pointer"
+    <section
+      id="hero"
+      className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent isolate z-10"
+    >
+      {/* Layout deux colonnes : texte gauche | Spline droite */}
+      <div className="flex flex-row items-center w-full mt-16">
+        {/* Colonne texte */}
+        <div className="flex flex-col flex-shrink-0 w-full lg:w-1/2">
+          {/* Eyebrow */}
+          <motion.p
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeLuxury, delay: 0.6 }}
+            className="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-6"
           >
-            Découvrir les projets
-          </MagneticButton>
+            Emmanuel · Vibe Developer
+          </motion.p>
+
+          {/* Tagline principale avec clip-path en deux vagues */}
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight mb-6 flex flex-col">
+            <span className="overflow-hidden block">
+              <motion.span
+                id="hero-tagline-1"
+                className="block"
+                initial={
+                  prefersReducedMotion
+                    ? { opacity: 0 }
+                    : { clipPath: "inset(100% 0% 0% 0%)" }
+                }
+                animate={
+                  prefersReducedMotion
+                    ? { opacity: 1 }
+                    : { clipPath: "inset(0% 0% 0% 0%)" }
+                }
+                transition={{ duration: 0.9, ease: easeLuxury, delay: 0.7 }}
+              >
+                Architecte
+              </motion.span>
+            </span>
+            <span className="overflow-hidden block">
+              <motion.span
+                id="hero-tagline-2"
+                className="block"
+                initial={
+                  prefersReducedMotion
+                    ? { opacity: 0 }
+                    : { clipPath: "inset(100% 0% 0% 0%)" }
+                }
+                animate={
+                  prefersReducedMotion
+                    ? { opacity: 1 }
+                    : { clipPath: "inset(0% 0% 0% 0%)" }
+                }
+                transition={{ duration: 0.9, ease: easeLuxury, delay: 0.9 }}
+              >
+                de l&apos;invisible.
+              </motion.span>
+            </span>
+          </h1>
+
+          {/* Sous-titre descriptif */}
+          <motion.p
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              delay: 1.2,
+            }}
+            className="text-muted text-base md:text-lg lg:text-xl max-w-[520px] leading-relaxed mb-10"
+          >
+            Je ne montre pas simplement du code. Je façonne des espaces
+            numériques interactifs à forte intensité émotionnelle.
+          </motion.p>
+
+          {/* CTA bouton magnétique */}
+          <motion.div
+            initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1], delay: 1.5 }}
+          >
+            <MagneticButton
+              onClick={() => {
+                document
+                  .getElementById("works")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-8 py-4 text-xs uppercase font-semibold tracking-widest text-accent bg-transparent border-[1.5px] border-accent rounded-full hover:bg-accent hover:text-bg transition-all duration-300 cursor-pointer"
+            >
+              Découvrir les projets
+            </MagneticButton>
+          </motion.div>
+        </div>
+
+        {/* Colonne Spline — visible uniquement sur lg+ */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, ease: easeLuxury, delay: 1.0 }}
+          className="hidden lg:flex flex-1 items-center justify-center relative"
+          style={{ height: "70vh", minHeight: 400 }}
+          aria-hidden="true"
+        >
+          <Spline scene={SPLINE_URL} style={{ width: "100%", height: "100%" }} />
         </motion.div>
       </div>
 
@@ -108,7 +161,12 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 2.2 }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2.2,
+          }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer pointer-events-none"
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">

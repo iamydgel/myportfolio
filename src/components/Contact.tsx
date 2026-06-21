@@ -63,7 +63,7 @@ export function Contact() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: false, amount: 0.15 }}
         className="max-w-[1440px] mx-auto w-full flex-grow flex flex-col justify-center my-auto"
       >
         <motion.p variants={itemVariants} className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-6 text-center md:text-left">
@@ -124,7 +124,7 @@ export function Contact() {
         variants={footerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         className="max-w-[1440px] mx-auto w-full border-t border-border-glow mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-6"
       >
         <motion.p variants={footerItemVariants} className="text-xs text-muted">

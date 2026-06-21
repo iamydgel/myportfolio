@@ -99,7 +99,7 @@ export function About() {
         scrollTrigger: {
           trigger: "#about",
           start: "top 35%",
-          toggleActions: "play none none none"
+          toggleActions: "play reverse play reverse"
         }
       });
 

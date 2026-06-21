@@ -167,7 +167,7 @@ function ProjectCard({
       initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: false, amount: 0.15 }}
       transition={{
         duration: 0.8,
         ease: [0.22, 0.9, 0.35, 1],
@@ -288,7 +288,7 @@ export function Works() {
             <motion.p
               initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.6, ease: [0.22, 0.9, 0.35, 1] }}
               className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4"
             >
@@ -298,7 +298,7 @@ export function Works() {
               <motion.h2
                 initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
                 whileInView={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: false, amount: 0.5 }}
                 transition={{ duration: 0.8, ease: [0.22, 0.9, 0.35, 1], delay: 0.1 }}
                 className="font-serif text-4xl md:text-5xl lg:text-6xl text-txt italic"
               >
@@ -311,7 +311,7 @@ export function Works() {
           <motion.div
             initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.5, ease: [0.2, 1, 0.3, 1], delay: 0.2 }}
             className="flex items-center gap-2 bg-surface/50 p-1 rounded-full border border-border-glow self-start"
           >
