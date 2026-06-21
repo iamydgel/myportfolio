@@ -116,7 +116,7 @@ function ProjectCard({
       transition={{
         duration: 0.8,
         ease: [0.22, 0.9, 0.35, 1],
-        delay: index * 0.08,
+        delay: index === 2 ? 0.24 : index === 3 ? 0.16 : index * 0.08,
       }}
       animate={{ rotateX, rotateY }}
       onMouseMove={handleMouseMove}
