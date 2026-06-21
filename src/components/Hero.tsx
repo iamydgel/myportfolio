@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,14 +9,9 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Chargement côté client uniquement — évite les erreurs SSR WebGL
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
-  ssr: false,
-  loading: () => null,
-});
-
-const SPLINE_URL =
-  "https://prod.spline.design/3dcircularcardscopycopy-FPxJTJgUlyngVIGURiM1ZJQa-Th9/scene.splinecode";
+// URL iframe Spline — évite tout conflit Three.js avec Aura.tsx
+const SPLINE_IFRAME_URL =
+  "https://my.spline.design/3dcircularcardscopycopy-FPxJTJgUlyngVIGURiM1ZJQa-Th9/";
 
 export function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -152,7 +146,18 @@ export function Hero() {
           style={{ height: "70vh", minHeight: 400 }}
           aria-hidden="true"
         >
-          <Spline scene={SPLINE_URL} style={{ width: "100%", height: "100%" }} />
+          <iframe
+            src={SPLINE_IFRAME_URL}
+            title="Objet 3D décoratif"
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+              background: "transparent",
+            }}
+            aria-hidden="true"
+            tabIndex={-1}
+          />
         </motion.div>
       </div>
 
