@@ -149,6 +149,7 @@ export function Hero() {
             src="/abstract.png"
             alt=""
             fill
+            sizes="(max-width: 1024px) 0px, 50vw"
             style={{ objectFit: "contain" }}
             priority
             aria-hidden="true"
