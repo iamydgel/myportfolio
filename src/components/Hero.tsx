@@ -10,6 +10,8 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
+
+
 export function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -147,9 +149,9 @@ export function Hero() {
             src="/abstract.png"
             alt=""
             fill
-            style={{ objectFit: "contain", objectPosition: "center" }}
+            style={{ objectFit: "contain" }}
             priority
-            aria-hidden
+            aria-hidden="true"
           />
         </motion.div>
       </div>
