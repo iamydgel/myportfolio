@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 export function NavBar() {
   const [activeSection, setActiveSection] = useState("");
@@ -56,12 +58,19 @@ export function NavBar() {
     { name: "Contact", href: "#contact", id: "contact" },
   ];
 
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   return (
-    <nav className={`fixed top-0 left-0 w-full h-16 z-50 transition-all duration-500 ${
-      scrolled
-        ? "bg-bg/80 backdrop-blur-md border-b border-border-glow shadow-md"
-        : "bg-transparent border-b border-transparent"
-    }`}>
+    <motion.nav
+      initial={prefersReducedMotion ? { y: 0 } : { y: "-100%" }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.4, ease: [0.22, 0.9, 0.35, 1], delay: 1.7 }}
+      className={`fixed top-0 left-0 w-full h-16 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-bg/80 backdrop-blur-md border-b border-border-glow shadow-md"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
       <div className="max-w-[1440px] mx-auto h-full px-6 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="font-serif text-xl italic tracking-wide text-txt hover:text-accent transition-colors duration-200">
@@ -137,6 +146,6 @@ export function NavBar() {
           </a>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
