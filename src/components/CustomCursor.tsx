@@ -19,7 +19,7 @@ export function CustomCursor() {
 
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 1900);
+    }, 300);
 
     // Positions physiques
     let rx = 0; // ring X

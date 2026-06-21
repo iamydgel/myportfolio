@@ -75,6 +75,7 @@ export function About() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
+      // Iris clip-path
       gsap.fromTo("#about", {
         clipPath: "circle(0% at 25vw 50vh)"
       }, {
@@ -84,6 +85,34 @@ export function About() {
           trigger: "#works",
           start: "bottom 70%",
           end: "bottom 10%",
+          scrub: 0.3
+        }
+      });
+
+      // Révélation du manifeste chaînée après l'orbe (700ms de transition orbe)
+      gsap.from("#about-right-col > *", {
+        opacity: 0,
+        y: prefersReducedMotion ? 0 : 24,
+        stagger: 0.08,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: "#about",
+          start: "top 35%",
+          toggleActions: "play none none none"
+        }
+      });
+
+      // Sortie Loi 4 : manifeste s'enfonce de +12px et s'estompe
+      gsap.to("#about-right-col > *", {
+        opacity: 0,
+        y: prefersReducedMotion ? 0 : 12,
+        stagger: 0.05,
+        ease: "power1.in", // --ease-depart
+        scrollTrigger: {
+          trigger: "#about",
+          start: "bottom 65%",
+          end: "bottom 5%",
           scrub: 0.3
         }
       });
@@ -253,34 +282,29 @@ export function About() {
         </div>
 
         {/* Colonne Droite : Manifeste & Stack & Chiffres */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
+        <div
+          id="about-right-col"
           className="flex flex-col"
         >
-          <motion.p variants={itemVariants} className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
             02 — Philosophie & Manifeste
-          </motion.p>
+          </p>
           
           <div className="overflow-hidden">
-            <motion.h2
-              variants={titleVariants}
-              transition={{ duration: 0.9, ease: [0.22, 0.9, 0.35, 1] }}
+            <h2
               className="font-serif text-4xl md:text-5xl text-txt italic mb-8"
             >
               Concevoir l'invisible.
-            </motion.h2>
+            </h2>
           </div>
 
           {/* Manifeste (environ 80 mots) */}
-          <motion.p variants={itemVariants} className="text-muted text-base md:text-lg leading-relaxed mb-8 max-w-[600px]">
+          <p className="text-muted text-base md:text-lg leading-relaxed mb-8 max-w-[600px]">
             Pour moi, le développement n'est pas une simple écriture de lignes de code. C'est l'art de façonner des espaces émotionnels, d'orchestrer la lumière, le mouvement et la matière numérique. Chaque pixel doit avoir une intention, chaque transition doit raconter une histoire silencieuse. Je traduis l'invisible en expériences interactives d'exception, alliant rigueur algorithmique et sensibilité esthétique pour marquer les esprits.
-          </motion.p>
+          </p>
 
           {/* Compteurs animés */}
-          <motion.div variants={itemVariants} className="grid grid-cols-3 gap-6 mb-12 border-t border-b border-border-glow py-8">
+          <div className="grid grid-cols-3 gap-6 mb-12 border-t border-b border-border-glow py-8">
             {stats.map((stat, i) => (
               <div key={i} className="text-center md:text-left">
                 <div className="font-serif text-3xl md:text-5xl text-accent italic mb-2">
@@ -291,10 +315,10 @@ export function About() {
                 </div>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Stack technique */}
-          <motion.div variants={itemVariants}>
+          <div>
             <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
               Technologies maîtrisées
             </h3>
@@ -312,8 +336,8 @@ export function About() {
                 </MarqueeContent>
               </Marquee>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
       </div>
     </section>

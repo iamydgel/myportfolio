@@ -49,6 +49,14 @@ export function Contact() {
     },
   };
 
+  const footerItemVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
+    },
+  };
+
   return (
     <section id="contact" className="relative w-full py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow isolate z-10 flex flex-col justify-between min-h-[60vh]">
       <motion.div 
@@ -119,15 +127,15 @@ export function Contact() {
         viewport={{ once: true }}
         className="max-w-[1440px] mx-auto w-full border-t border-border-glow mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-6"
       >
-        <p className="text-xs text-muted">
+        <motion.p variants={footerItemVariants} className="text-xs text-muted">
           © {currentYear} Emmanuel. Tous droits réservés.
-        </p>
+        </motion.p>
 
         {/* Liens Réseaux Sociaux */}
         <div className="flex items-center gap-6">
           {socialLinks.map((link) => (
             <motion.a
-              variants={itemVariants}
+              variants={footerItemVariants}
               key={link.name}
               href={link.href}
               target="_blank"

@@ -181,6 +181,7 @@ function ProjectCard({
         transformStyle: "preserve-3d",
         perspective: 800,
       }}
+      data-hue={project.id === "p1" ? 38 : project.id === "p2" ? 205 : project.id === "p3" ? 270 : 150}
       className="group work-card relative flex flex-col justify-end min-h-[400px] md:min-h-[500px] p-8 rounded-radius-card bg-surface border border-border-glow overflow-hidden cursor-pointer"
     >
       {/* Dégradé visuel abstrait en fond */}

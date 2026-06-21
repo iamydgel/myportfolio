@@ -55,6 +55,7 @@ export function Aura() {
     // Trackers pour Works
     let hoveredCardCenter = { x: 0, y: 0 };
     let isCardHovered = false;
+    let hoveredCardHue = 38;
 
     // Mettre à jour la position du pointeur
     const updateTarget = (clientX: number, clientY: number) => {
@@ -91,6 +92,7 @@ export function Aura() {
         hoveredCardCenter.x = cardRect.left + cardRect.width / 2;
         hoveredCardCenter.y = cardRect.top + cardRect.height / 2;
         isCardHovered = true;
+        hoveredCardHue = parseFloat(card.getAttribute("data-hue") || "38");
       } else {
         isCardHovered = false;
       }
@@ -337,6 +339,13 @@ export function Aura() {
           // Atterrissage spring (stiffness: 120, damping: 18)
           attractionRate = 0.12;
           frictionRate = 0.18;
+        } else if (scrollProgress >= 3.0) {
+          // Oscillation lente finale : amplitude 10px, période 10s
+          const t = Date.now() / 1000;
+          const oscX = Math.sin(t * (2 * Math.PI / 10)) * 10;
+          const oscY = Math.cos(t * (2 * Math.PI / 10)) * 10;
+          finalTx += oscX;
+          finalTy += oscY;
         }
       }
 
@@ -359,7 +368,19 @@ export function Aura() {
         ay += Math.cos(angle) * 0.5;
       }
 
-      const uColorMix = Math.max(0.0, Math.min(1.0, (hue - 38) / (205 - 38)));
+      // Appliquer le hue-shift si survolé
+      let finalHue = hue;
+      if (isCardHovered) {
+        finalHue = hue + Math.sign(hoveredCardHue - hue) * 15;
+      }
+
+      // Estomper en veille sommeil après 30s d'inactivité
+      let finalOp = op;
+      if (Date.now() - lastMoveTime > 30000) {
+        finalOp = op * 0.2;
+      }
+
+      const uColorMix = Math.max(0.0, Math.min(1.0, (finalHue - 38) / (205 - 38)));
 
       if (useWebGL && renderer && scene && camera && material) {
         const normX = (ax + AURA_HALF) / window.innerWidth;
@@ -368,12 +389,12 @@ export function Aura() {
         material.uniforms.uMouse.value.set(normX, normY);
         material.uniforms.uTime.value += 0.01;
         material.uniforms.uScale.value = finalScale;
-        material.uniforms.uGlow.value = op;
+        material.uniforms.uGlow.value = finalOp;
         material.uniforms.uColorMix.value = uColorMix;
         renderer.render(scene, camera);
       } else if (fallbackRef.current) {
-        const baseColor1 = `rgba(200, 169, 110, ${op})`;
-        const baseColor2 = `rgba(90, 100, 200, ${op * 0.6})`;
+        const baseColor1 = `rgba(200, 169, 110, ${finalOp})`;
+        const baseColor2 = `rgba(90, 100, 200, ${finalOp * 0.6})`;
         fallbackRef.current.style.background = `radial-gradient(circle at 30% 30%, ${baseColor1} 0%, ${baseColor2} 40%, transparent 70%)`;
         fallbackRef.current.style.transform = `translate3d(${ax}px, ${ay}px, 0) scale(${finalScale})`;
       }
