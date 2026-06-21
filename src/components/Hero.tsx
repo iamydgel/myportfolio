@@ -1,8 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MagneticButton } from "./MagneticButton";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -10,8 +15,27 @@ export function Hero() {
   // Courbe d'animation luxury
   const easeLuxury = [0.22, 0.9, 0.35, 1] as const;
 
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to("#hero-tagline-1, #hero-tagline-2", {
+        clipPath: "inset(100% 0% 0% 0%)",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "bottom 75%",
+          end: "bottom 15%",
+          scrub: 0.3,
+        },
+      });
+    });
+
+    return () => ctx.revert();
+  }, [prefersReducedMotion]);
+
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent isolate z-10">
+    <section id="hero" className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent isolate z-10">
       {/* Contenu principal */}
       <div className="max-w-[1000px] mt-16">
         {/* Eyebrow */}
@@ -28,6 +52,7 @@ export function Hero() {
         <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl italic text-txt leading-[1.1] tracking-tight mb-6 flex flex-col">
           <span className="overflow-hidden block">
             <motion.span
+              id="hero-tagline-1"
               className="block"
               initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
               animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
@@ -38,6 +63,7 @@ export function Hero() {
           </span>
           <span className="overflow-hidden block">
             <motion.span
+              id="hero-tagline-2"
               className="block"
               initial={prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" }}
               animate={prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" }}
