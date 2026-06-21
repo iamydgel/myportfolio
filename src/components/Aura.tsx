@@ -170,7 +170,6 @@ export function Aura() {
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
-        mesh: null,
       } as any);
 
       const geometry = new THREE.PlaneGeometry(2, 2);
