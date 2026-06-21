@@ -156,6 +156,31 @@ export function About() {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    },
+  };
+
+  const titleVariants = {
+    hidden: prefersReducedMotion ? { opacity: 0 } : { clipPath: "inset(100% 0% 0% 0%)" },
+    visible: prefersReducedMotion ? { opacity: 1 } : { clipPath: "inset(0% 0% 0% 0%)" },
+  };
+
   return (
     <section id="about" ref={sectionRef} className="relative w-full min-h-screen py-24 px-6 md:px-12 lg:px-24 bg-transparent border-t border-border-glow overflow-hidden isolate z-10">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -203,22 +228,34 @@ export function About() {
         </div>
 
         {/* Colonne Droite : Manifeste & Stack & Chiffres */}
-        <div className="flex flex-col">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          className="flex flex-col"
+        >
+          <motion.p variants={itemVariants} className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
             02 — Philosophie & Manifeste
-          </p>
+          </motion.p>
           
-          <h2 className="font-serif text-4xl md:text-5xl text-txt italic mb-8">
-            Concevoir l'invisible.
-          </h2>
+          <div className="overflow-hidden">
+            <motion.h2
+              variants={titleVariants}
+              transition={{ duration: 0.9, ease: [0.22, 0.9, 0.35, 1] }}
+              className="font-serif text-4xl md:text-5xl text-txt italic mb-8"
+            >
+              Concevoir l'invisible.
+            </motion.h2>
+          </div>
 
           {/* Manifeste (environ 80 mots) */}
-          <p className="text-muted text-base md:text-lg leading-relaxed mb-8 max-w-[600px]">
+          <motion.p variants={itemVariants} className="text-muted text-base md:text-lg leading-relaxed mb-8 max-w-[600px]">
             Pour moi, le développement n'est pas une simple écriture de lignes de code. C'est l'art de façonner des espaces émotionnels, d'orchestrer la lumière, le mouvement et la matière numérique. Chaque pixel doit avoir une intention, chaque transition doit raconter une histoire silencieuse. Je traduis l'invisible en expériences interactives d'exception, alliant rigueur algorithmique et sensibilité esthétique pour marquer les esprits.
-          </p>
+          </motion.p>
 
           {/* Compteurs animés */}
-          <div className="grid grid-cols-3 gap-6 mb-12 border-t border-b border-border-glow py-8">
+          <motion.div variants={itemVariants} className="grid grid-cols-3 gap-6 mb-12 border-t border-b border-border-glow py-8">
             {stats.map((stat, i) => (
               <div key={i} className="text-center md:text-left">
                 <div className="font-serif text-3xl md:text-5xl text-accent italic mb-2">
@@ -229,10 +266,10 @@ export function About() {
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Stack technique */}
-          <div>
+          <motion.div variants={itemVariants}>
             <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent mb-4">
               Technologies maîtrisées
             </h3>
@@ -250,8 +287,8 @@ export function About() {
                 </MarqueeContent>
               </Marquee>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
       </div>
     </section>
