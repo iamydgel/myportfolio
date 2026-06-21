@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useRouter } from "next/navigation";
+import { gsap } from "gsap";
+import { Flip } from "gsap/Flip";
+
+gsap.registerPlugin(Flip);
 
 interface Project {
   id: string;
@@ -81,6 +86,9 @@ function ProjectCard({
   index: number;
   prefersReducedMotion: boolean;
 }) {
+  const router = useRouter();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
 
@@ -106,8 +114,55 @@ function ProjectCard({
     setRotateY(0);
   };
 
+  const handleOpen = () => {
+    const slug = project.title.toLowerCase().replace(" ", "-");
+    sessionStorage.setItem("worksScrollY", String(window.scrollY));
+
+    const navigate = () => router.push(`/works/${slug}`);
+
+    // Si supporté, on utilise la View Transitions API native
+    if (
+      typeof document !== "undefined" &&
+      (document as any).startViewTransition &&
+      !prefersReducedMotion
+    ) {
+      if (cardRef.current) cardRef.current.style.viewTransitionName = "project-image";
+      if (titleRef.current) titleRef.current.style.viewTransitionName = "project-title";
+
+      (document as any).startViewTransition(() => {
+        navigate();
+      });
+
+      // Nettoyage immédiat post-trigger pour éviter les conflits au prochain rendu
+      setTimeout(() => {
+        if (cardRef.current) cardRef.current.style.viewTransitionName = "";
+        if (titleRef.current) titleRef.current.style.viewTransitionName = "";
+      }, 50);
+    } else if (cardRef.current && !prefersReducedMotion) {
+      // Repli GSAP Flip pour navigateurs non supportés
+      const state = Flip.getState(cardRef.current);
+      
+      // Simuler l'expansion vers le plein écran
+      gsap.to(cardRef.current, {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 999,
+        borderRadius: 0,
+        duration: 0.5,
+        ease: "power3.inOut",
+        onComplete: navigate,
+      });
+    } else {
+      navigate();
+    }
+  };
+
   return (
     <motion.div
+      ref={cardRef}
       layout
       initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 40 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -121,6 +176,7 @@ function ProjectCard({
       animate={{ rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={handleOpen}
       style={{
         transformStyle: "preserve-3d",
         perspective: 800,
@@ -157,7 +213,7 @@ function ProjectCard({
           ))}
         </div>
 
-        <h3 className="font-serif text-2xl md:text-3xl lg:text-4xl text-txt italic mb-3">
+        <h3 ref={titleRef} className="font-serif text-2xl md:text-3xl lg:text-4xl text-txt italic mb-3">
           {project.title}
         </h3>
 
@@ -172,6 +228,17 @@ function ProjectCard({
 export function Works() {
   const [filter, setFilter] = useState<"all" | "web" | "mobile">("all");
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  useLayoutEffect(() => {
+    const y = sessionStorage.getItem("worksScrollY");
+    if (y) {
+      // Attendre un court instant que le layout de la page soit stable
+      setTimeout(() => {
+        window.scrollTo(0, Number(y));
+        sessionStorage.removeItem("worksScrollY");
+      }, 50);
+    }
+  }, []);
 
   const projects: Project[] = [
     {
