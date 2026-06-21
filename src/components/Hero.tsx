@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,10 +9,6 @@ import { MagneticButton } from "./MagneticButton";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
-
-// URL iframe Spline — évite tout conflit Three.js avec Aura.tsx
-const SPLINE_IFRAME_URL =
-  "https://my.spline.design/3dcircularcardscopycopy-FPxJTJgUlyngVIGURiM1ZJQa-Th9/";
 
 export function Hero() {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -146,17 +143,13 @@ export function Hero() {
           style={{ height: "70vh", minHeight: 400 }}
           aria-hidden="true"
         >
-          <iframe
-            src={SPLINE_IFRAME_URL}
-            title="Objet 3D décoratif"
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-              background: "transparent",
-            }}
-            aria-hidden="true"
-            tabIndex={-1}
+          <Image
+            src="/abstract.png"
+            alt=""
+            fill
+            style={{ objectFit: "contain", objectPosition: "center" }}
+            priority
+            aria-hidden
           />
         </motion.div>
       </div>
