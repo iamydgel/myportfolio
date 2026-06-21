@@ -62,6 +62,27 @@ export function Contact() {
           03 — Lancer une conversation
         </motion.p>
 
+        {/* Badge disponibilité avec spring */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, scale: 0.8 },
+            visible: {
+              opacity: 1,
+              scale: 1,
+              transition: {
+                type: "spring",
+                stiffness: 200,
+                damping: 22,
+                delay: 0.15
+              }
+            }
+          }}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono mb-8 self-center md:self-start"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Disponible pour de nouveaux projets</span>
+        </motion.div>
+
         <div className="max-w-[800px] text-center md:text-left">
           <div className="overflow-hidden">
             <motion.h2 
