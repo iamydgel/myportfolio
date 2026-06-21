@@ -2,6 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 export function Aura() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,25 +41,25 @@ export function Aura() {
     // Physique
     let ax = typeof window !== "undefined" ? window.innerWidth / 2 - AURA_HALF : 0;
     let ay = typeof window !== "undefined" ? window.innerHeight / 2 - AURA_HALF : 0;
-    let tx = ax;
-    let ty = ay;
     let vx = 0;
     let vy = 0;
     let scale = 1.0;
     let targetScale = 1.0;
-
-    const FRICTION = 0.08;
-    const ATTRACTION = 0.06;
     const MASS = 1.0;
 
-    // Drift idle
+    let mouseX = ax;
+    let mouseY = ay;
     let lastMoveTime = Date.now();
     let angle = 0;
 
-    // Mettre à jour la cible
+    // Trackers pour Works
+    let hoveredCardCenter = { x: 0, y: 0 };
+    let isCardHovered = false;
+
+    // Mettre à jour la position du pointeur
     const updateTarget = (clientX: number, clientY: number) => {
-      tx = clientX - AURA_HALF;
-      ty = clientY - AURA_HALF;
+      mouseX = clientX;
+      mouseY = clientY;
       lastMoveTime = Date.now();
     };
 
@@ -68,18 +73,26 @@ export function Aura() {
       }
     };
 
-    // Gestion du hover sur les CTA
+    // Gestion du hover sur les éléments interactifs et les cartes Works
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (
-        target &&
-        (target.closest("button") ||
-          target.closest("a") ||
-          (target.classList && target.classList.contains("interactive")))
-      ) {
-        targetScale = 1.25;
+      if (!target) return;
+
+      const isInteractive = !!(
+        target.closest("button") ||
+        target.closest("a") ||
+        (target.classList && target.classList.contains("interactive"))
+      );
+      targetScale = isInteractive ? 1.25 : 1.0;
+
+      const card = target.closest(".work-card") as HTMLElement;
+      if (card) {
+        const cardRect = card.getBoundingClientRect();
+        hoveredCardCenter.x = cardRect.left + cardRect.width / 2;
+        hoveredCardCenter.y = cardRect.top + cardRect.height / 2;
+        isCardHovered = true;
       } else {
-        targetScale = 1.0;
+        isCardHovered = false;
       }
     };
 
@@ -102,7 +115,6 @@ export function Aura() {
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
       renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
-      // Résolution réduite par 2 sur mobile pour les performances
       const isMobile = width < 768;
       renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.setSize(width, height);
@@ -140,7 +152,6 @@ export function Aura() {
           varying vec2 vUv;
 
           void main() {
-            // Ajustement du ratio d'aspect pour garder l'aura circulaire
             vec2 d = vUv - uMouse;
             float r = length(d) / (0.26 * uScale);
             float glow = exp(-r * r * 3.5) * uGlow;
@@ -148,7 +159,6 @@ export function Aura() {
             vec3 warm = vec3(0.78, 0.66, 0.43);   // Lux Gold
             vec3 cool = vec3(0.35, 0.39, 0.78);   // Ice Blue
             
-            // Mix de base selon le scroll
             vec3 baseColor = mix(warm, cool, uColorMix);
             vec3 col = mix(baseColor, cool, smoothstep(0.0, 0.8, r));
             
@@ -158,7 +168,8 @@ export function Aura() {
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
-      });
+        mesh: null,
+      } as any);
 
       const geometry = new THREE.PlaneGeometry(2, 2);
       mesh = new THREE.Mesh(geometry, material);
@@ -171,82 +182,172 @@ export function Aura() {
       window.addEventListener("resize", handleResize);
     }
 
+    // 3. Configuration GSAP (MotionPath & Pont variables CSS)
+    const auraTarget = document.getElementById("aura-target-node");
+    const auraBridge = document.getElementById("aura-bridge");
+
+    let pulseTween: gsap.core.Tween | null = null;
+    let gsapCtx: any = null;
+
+    if (auraTarget && auraBridge) {
+      pulseTween = gsap.to(auraBridge, {
+        "--pulse-scale": 1.08,
+        duration: 2.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        paused: true,
+      });
+
+      gsapCtx = gsap.context(() => {
+        // Animation de la cible sur le chemin SVG spine
+        gsap.to(auraTarget, {
+          motionPath: {
+            path: "#aura-spine",
+            align: "#aura-spine",
+            alignOrigin: [0.5, 0.5],
+          },
+          ease: "none",
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.3,
+          },
+        });
+
+        // Timeline de teinte et intensité selon les checkpoints du scroll
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.3,
+          },
+        });
+
+        tl.to(auraBridge, { "--hue": 38, "--op": 0.13 }, 0)
+          .to(auraBridge, { "--hue": 38, "--op": 0.08 }, 0.25)
+          .to(auraBridge, { "--hue": 32, "--op": 0.10 }, 0.55)
+          .to(auraBridge, { "--hue": 205, "--op": 0.07 }, 0.85);
+
+        // Déclencher le pulse dans la section About
+        ScrollTrigger.create({
+          trigger: "#about",
+          start: "top bottom",
+          end: "bottom top",
+          onEnter: () => pulseTween?.play(),
+          onEnterBack: () => pulseTween?.play(),
+          onLeave: () => pulseTween?.pause(),
+          onLeaveBack: () => pulseTween?.pause(),
+        });
+      });
+    }
+
     // Boucle d'animation principale (RAF)
     const tick = () => {
-      // Calcul du défilement pour les interpolations
+      // Lire les variables CSS calculées par GSAP
+      let hue = 38;
+      let op = 0.13;
+      let pulseScale = 1.0;
+
+      if (auraBridge) {
+        const computed = window.getComputedStyle(auraBridge);
+        hue = parseFloat(computed.getPropertyValue("--hue") || "38");
+        op = parseFloat(computed.getPropertyValue("--op") || "0.13");
+        pulseScale = parseFloat(computed.getPropertyValue("--pulse-scale") || "1.0");
+      }
+
       const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
-      const height = typeof window !== "undefined" ? window.innerHeight : 800;
-      const width = typeof window !== "undefined" ? window.innerWidth : 1200;
-      const scrollProgress = scrollY / (height || 1);
+      const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+      const scrollProgress = scrollY / (viewportHeight || 1);
 
-      // Helper d'interpolation linéaire
-      const interpolate = (val: number, inputs: number[], outputs: number[]) => {
-        if (val <= inputs[0]) return outputs[0];
-        if (val >= inputs[inputs.length - 1]) return outputs[outputs.length - 1];
-        for (let i = 0; i < inputs.length - 1; i++) {
-          if (val >= inputs[i] && val <= inputs[i + 1]) {
-            const t = (val - inputs[i]) / (inputs[i + 1] - inputs[i]);
-            return outputs[i] + t * (outputs[i + 1] - outputs[i]);
-          }
+      // Calcul des coordonnées cibles de l'Aura sur le tracé SVG
+      let pathX = window.innerWidth / 2 - AURA_HALF;
+      let pathY = window.innerHeight / 2 - AURA_HALF;
+
+      if (auraTarget) {
+        const rect = auraTarget.getBoundingClientRect();
+        pathX = rect.left + rect.width / 2 - AURA_HALF;
+        pathY = rect.top + rect.height / 2 - AURA_HALF;
+      }
+
+      let finalTx = pathX;
+      let finalTy = pathY;
+
+      let attractionRate = 0.06;
+      let frictionRate = 0.08;
+
+      if (scrollProgress < 1.0) {
+        // --- HERO : Mix souris + chemin ---
+        const biasMix = 0.7; // 70% chemin, 30% souris
+        const rawTx = mouseX - AURA_HALF;
+        const rawTy = mouseY - AURA_HALF;
+        finalTx = rawTx * (1.0 - biasMix) + pathX * biasMix;
+        finalTy = rawTy * (1.0 - biasMix) + pathY * biasMix;
+      } else if (scrollProgress >= 1.0 && scrollProgress < 2.0) {
+        // --- WORKS : Souris + dérive sur carte ---
+        if (isCardHovered) {
+          const dx = hoveredCardCenter.x - mouseX;
+          const dy = hoveredCardCenter.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const driftX = dist > 0 ? (dx / dist) * Math.min(40, dist) : 0;
+          const driftY = dist > 0 ? (dy / dist) * Math.min(40, dist) : 0;
+          finalTx = mouseX + driftX - AURA_HALF;
+          finalTy = mouseY + driftY - AURA_HALF;
+          attractionRate = 0.04;
+        } else {
+          finalTx = mouseX - AURA_HALF;
+          finalTy = mouseY - AURA_HALF;
         }
-        return outputs[0];
-      };
+      } else {
+        // --- ABOUT & CONTACT : Ancrage pur sur chemin ---
+        finalTx = pathX;
+        finalTy = pathY;
 
-      // Interpolation de la force lumineuse (uGlow) et du mélange colorimétrique (uColorMix)
-      const currentGlow = interpolate(scrollProgress, [0, 1, 2, 3], [0.13, 0.08, 0.06, 0.07]);
-      const currentColorMix = interpolate(scrollProgress, [0, 1, 2, 3], [0.0, 0.3, 0.0, 1.0]);
+        if (scrollProgress >= 2.0 && scrollProgress < 3.0) {
+          // Atterrissage spring (stiffness: 120, damping: 18)
+          attractionRate = 0.12;
+          frictionRate = 0.18;
+        }
+      }
 
-      // Ancrage physique (bias) de l'Aura par section
-      const biasXTarget = interpolate(scrollProgress, [0, 1, 2, 3], [0.85, 0.5, 0.25, 0.5]) * width - AURA_HALF;
-      const biasYTarget = interpolate(scrollProgress, [0, 1, 2, 3], [0.15, 0.5, 0.5, 0.85]) * height - AURA_HALF;
-      const biasMix = interpolate(scrollProgress, [0, 1, 2, 3], [0.7, 0.0, 0.8, 0.9]);
-
-      // Calcul des coordonnées cibles mixtes
-      const biasX = biasXTarget;
-      const biasY = biasYTarget;
-
-      // Parallaxe vertical de l'Aura sur le Hero
-      const parallaxY = scrollProgress < 1.0 ? scrollY * 0.3 : 0;
-
-      const finalTx = tx * (1.0 - biasMix) + biasX * biasMix;
-      const finalTy = (ty + parallaxY) * (1.0 - biasMix) + biasY * biasMix;
-
-      // 1. Spring Physics pour l'Aura vers la cible mixte
-      const fx = (finalTx - ax) * ATTRACTION / MASS;
-      const fy = (finalTy - ay) * ATTRACTION / MASS;
-      vx = (vx + fx) * (1 - FRICTION);
-      vy = (vy + fy) * (1 - FRICTION);
+      // Spring physics
+      const fx = (finalTx - ax) * attractionRate / MASS;
+      const fy = (finalTy - ay) * attractionRate / MASS;
+      vx = (vx + fx) * (1 - frictionRate);
+      vy = (vy + fy) * (1 - frictionRate);
       ax += vx;
       ay += vy;
 
       // Inertie pour le scale
       scale += (targetScale - scale) * 0.1;
+      const finalScale = scale * pulseScale;
 
-      // 2. Drift autonome si inactif (>3s)
-      if (Date.now() - lastMoveTime > 3000) {
+      // Drift autonome idle (seulement avant About)
+      if (scrollProgress < 2.0 && Date.now() - lastMoveTime > 3000) {
         angle += 0.005;
-        tx += Math.sin(angle) * 0.8;
-        ty += Math.cos(angle) * 0.8;
+        ax += Math.sin(angle) * 0.5;
+        ay += Math.cos(angle) * 0.5;
       }
 
-      // 3. Rendu
+      const uColorMix = Math.max(0.0, Math.min(1.0, (hue - 38) / (205 - 38)));
+
       if (useWebGL && renderer && scene && camera && material) {
-        // Normaliser les coordonnées physiques pour le Shader [0..1]
         const normX = (ax + AURA_HALF) / window.innerWidth;
-        const normY = 1.0 - (ay + AURA_HALF) / window.innerHeight; // Inverser l'axe Y pour Three.js
+        const normY = 1.0 - (ay + AURA_HALF) / window.innerHeight;
 
         material.uniforms.uMouse.value.set(normX, normY);
         material.uniforms.uTime.value += 0.01;
-        material.uniforms.uScale.value = scale;
-        material.uniforms.uGlow.value = currentGlow;
-        material.uniforms.uColorMix.value = currentColorMix;
+        material.uniforms.uScale.value = finalScale;
+        material.uniforms.uGlow.value = op;
+        material.uniforms.uColorMix.value = uColorMix;
         renderer.render(scene, camera);
       } else if (fallbackRef.current) {
-        // Fallback CSS dynamique
-        const baseColor1 = `rgba(200, 169, 110, ${currentGlow})`;
-        const baseColor2 = `rgba(90, 100, 200, ${currentGlow * 0.6})`;
+        const baseColor1 = `rgba(200, 169, 110, ${op})`;
+        const baseColor2 = `rgba(90, 100, 200, ${op * 0.6})`;
         fallbackRef.current.style.background = `radial-gradient(circle at 30% 30%, ${baseColor1} 0%, ${baseColor2} 40%, transparent 70%)`;
-        fallbackRef.current.style.transform = `translate3d(${ax}px, ${ay}px, 0) scale(${scale})`;
+        fallbackRef.current.style.transform = `translate3d(${ax}px, ${ay}px, 0) scale(${finalScale})`;
       }
 
       requestRef.current = requestAnimationFrame(tick);
@@ -264,12 +365,21 @@ export function Aura() {
       if (renderer && renderer.domElement && containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
+      if (gsapCtx) {
+        gsapCtx.revert();
+      }
+      if (pulseTween) {
+        pulseTween.kill();
+      }
     };
   }, []);
 
   return (
     <div ref={containerRef} className="aura-container">
-      {/* Fallback CSS radial-gradient (utilisé si pas de WebGL ou sur mobile/saveData) */}
+      {/* Nœuds de contrôle techniques pour le plan-séquence */}
+      <div id="aura-bridge" style={{ display: "none", "--hue": "38", "--op": "0.13", "--pulse-scale": "1.0" } as any} />
+      <div id="aura-target-node" style={{ position: "absolute", width: "1px", height: "1px", visibility: "hidden", pointerEvents: "none" }} />
+      {/* Fallback CSS radial-gradient */}
       <div ref={fallbackRef} className="aura" />
     </div>
   );
